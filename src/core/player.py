@@ -5,8 +5,8 @@ import logging
 class AudioPlayer(QObject):
     positionChanged = Signal(float)
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, parent=None):
+        super().__init__(parent)
         self.position_timer = QTimer()
         self.position_timer.timeout.connect(self._check_position)
         self.last_position = 0

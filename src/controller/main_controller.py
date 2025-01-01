@@ -16,7 +16,7 @@ class MainController(QObject):
     def __init__(self):
         super().__init__()
         self.logger = setup_logger()
-        self.player = AudioPlayer()
+        self.player = AudioPlayer(self)
         self.state_manager = StateManager()
         self.file_manager = FileManager()
         
