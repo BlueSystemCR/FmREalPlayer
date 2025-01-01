@@ -1,7 +1,7 @@
 from PySide6.QtCore import QObject, Signal, Slot
-from core.player import AudioPlayer
-from core.state_manager import StateManager
-from utils.file_manager import FileManager
+from src.core.player import AudioPlayer
+from src.core.state_manager import StateManager
+from src.utils.file_manager import FileManager
 from utils.logger import setup_logger
 
 class MainController(QObject):

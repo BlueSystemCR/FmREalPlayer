@@ -1,7 +1,22 @@
+from PySide6.QtCore import QObject, Signal, QTimer
 import vlc
 import logging
 
-class AudioPlayer:
+class AudioPlayer(QObject):
+    positionChanged = Signal(float)
+
+    def __init__(self):
+        super().__init__()
+        self.position_timer = QTimer()
+        self.position_timer.timeout.connect(self._check_position)
+        self.last_position = 0
+        self.logger = logging.getLogger(__name__)
+        self.instance = vlc.Instance()
+        self.player = self.instance.media_player_new()
+        self.current_media = None
+        self._volume = 100
+        self._state = "STOPPED"
+        self.logger.info("Reproductor VLC inicializado")
     def __init__(self):
         self.logger = logging.getLogger(__name__)
         self.instance = vlc.Instance()
@@ -29,6 +44,7 @@ class AudioPlayer:
             self.logger.error("Error al iniciar reproducción")
             return False
         self._state = "PLAYING"
+        self.position_timer.start(500)  # Check position every 500ms
         self.logger.info("Reproducción iniciada")
         return True
 
@@ -36,13 +52,22 @@ class AudioPlayer:
         """Pausa la reproducción"""
         self.player.pause()
         self._state = "PAUSED"
+        self.position_timer.stop()
         self.logger.info("Reproducción pausada")
 
     def stop(self):
         """Detiene la reproducción"""
         self.player.stop()
         self._state = "STOPPED"
+        self.position_timer.stop()
         self.logger.info("Reproducción detenida")
+
+    def _check_position(self):
+        """Check current position and emit signal if changed"""
+        current_pos = self.get_position()
+        if current_pos != self.last_position:
+            self.positionChanged.emit(current_pos)
+            self.last_position = current_pos
 
     def set_volume(self, volume):
         """Ajusta el volumen (0-100)"""

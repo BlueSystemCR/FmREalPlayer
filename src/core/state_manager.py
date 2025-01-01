@@ -1,6 +1,6 @@
 import logging
 from typing import Callable
-from core.player_state import PlayerState, PlayerStatus
+from src.core.player_state import PlayerState, PlayerStatus
 
 class StateManager:
     def __init__(self):
